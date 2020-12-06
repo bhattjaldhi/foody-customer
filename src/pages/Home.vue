@@ -17,16 +17,18 @@
               @click="openShopDetails(shop.id)"
             >
               <q-card-section class="row justify-between">
-                <div class="text-h6 text-bold">{{ shop.name }}</div>
-                <q-avatar
-                  :color="shop.is_online === 1 ? 'positive' : 'red'"
+                <div class="text-h6 text-bold col-11">{{ shop.name }}</div>
+                <div class="col-1 flex justify-end">
+                  <q-avatar
+                  :color="shop.is_online == 1 ? 'positive' : 'red'"
                   size="10px"
                 ></q-avatar>
+                </div>
               </q-card-section>
 
               <q-card-section class="q-pt-none">
-                <span>{{ shop.user.phone }}</span>
-                {{ shop.address }}
+                <div>{{ shop.user.phone }}</div>
+                <div>{{ shop.address }}</div>
               </q-card-section>
             </q-card>
           </div>
@@ -53,7 +55,7 @@ export default {
       return this.$store.state.shop.shops.filter((x) => x.products_count > 0);
     },
   },
-  mounted() {
+  created() {
     let _this = this;
     _this.getShops();
     if (!this.interval) {
@@ -70,17 +72,12 @@ export default {
       done();
     },
     async getShops() {
-      if (!this.shops.length) {
-        this.$q.loading.show();
-      }
       try {
         let shops = await Shops.include("user").page(1).limit(5).$get();
         this.$store.dispatch("setShops", shops);
       } catch (error) {
         console.error(error);
-      } finally {
-        this.$q.loading.hide();
-      }
+      } 
     },
     async getCategories() {
       this.categories = await Categories.page(1).limit(5).$get();

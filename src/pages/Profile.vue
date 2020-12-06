@@ -1,8 +1,8 @@
 <template>
   <div class="flex justify-center q-ma-md">
     <q-card flat>
-      <q-card-section v-if="!user" class="bg-red text-white">
-        User details are missing
+      <q-card-section v-if="!user" class="bg-grey text-white">
+        Please fill user details before placing an order
       </q-card-section>
       <q-form @submit="submit" ref="form">
         <q-card-section class="text-h6"> Personal Information </q-card-section>
@@ -127,17 +127,6 @@ export default {
     },
   },
   methods: {
-    getCurrentLocation() {
-      let _self = this;
-      navigator.geolocation.getCurrentPosition(
-        function (res) {
-          console.log(res);
-        },
-        function (error) {
-          console.log(error);
-        }
-      );
-    },
     getData() {
       // get user record from store
       let user = auth.currentUser;
@@ -153,7 +142,9 @@ export default {
         this.$q.loading.show();
         if (this.user) {
           // update user detail
-          await this.input.save();
+          let customer = await Customers.$find(this.user.id)
+          customer = Object.assign(Object.create(Customers.prototype), this.user);
+          await customer.save();
         } else {
           // create user detail
           let input = { ...this.input };
@@ -171,11 +162,16 @@ export default {
           customer.firebase_uid = auth.currentUser.uid;
           customer = await customer.save();
           this.$store.commit('user', customer)
+         
         }
       } catch (error) {
         console.error(error);
       } finally {
         this.$q.loading.hide();
+         this.$q.notify({
+            type: 'positive',
+            message: 'User details are saved successfully, you may order now'
+          })
       }
     },
   },

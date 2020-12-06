@@ -30,12 +30,6 @@
         />
         <q-tab
           class="text-capitalize"
-          name="favourites"
-          icon="favorite"
-          label="Favourites"
-        />
-        <q-tab
-          class="text-capitalize"
           name="profile"
           icon="person"
           label="Profile"
@@ -62,10 +56,19 @@ export default {
       tab: "home",
     };
   },
+  computed: {
+    user() {
+      return this.$store.state.auth.user;
+    },
+  },
   mounted(){
     let view = this.$router.currentRoute.query.view
     if(view){
       this.tab = view
+    }
+
+    if(!this.user){
+      this.tab = 'profile'
     }
   }
 };

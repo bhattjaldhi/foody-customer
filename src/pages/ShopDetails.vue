@@ -7,7 +7,7 @@
             {{ shop.name }}
           </div>
           <div class="text-body2 text-grey">
-              <q-icon name="place" />{{ shop.address }}
+            <q-icon name="place" />{{ shop.address }}
           </div>
         </q-card-section>
         <q-card-section>
@@ -15,6 +15,7 @@
             <q-expansion-item
               expand-separator
               :label="category.name"
+              class="text-bold"
               v-for="(category, indexC) in categories"
               :key="`category${indexC}`"
             >
@@ -23,25 +24,31 @@
                   v-for="(product, indexP) in category.products"
                   :key="`product${indexC}${indexP}`"
                 >
-                  <q-item-section> {{ product.name }} </q-item-section>
+                  <q-item-section class="text-subtitle2">
+                    {{ product.name }}
+                  </q-item-section>
                   <q-item-section side>
                     <div class="row items-center">
-                      <q-icon
-                        name="remove_circle"
-                        color="red"
-                        size="sm"
-                        v-if="getCartQuantity(product.id)"
-                        @click="$store.commit('removeFromCart', product)"
-                      />
-                      <span class="q-mx-sm text-center" style="width: 10px">{{
-                        getCartQuantity(product.id)
-                      }}</span>
-                      <q-icon
-                        size="sm"
-                        name="add_circle"
-                        color="green"
-                        @click="$store.commit('addToCart', {...product, shop})"
-                      />
+                      <div class="cart-buttons">
+                        <q-icon
+                          name="remove_circle"
+                          color="red"
+                          size="sm"
+                          v-if="getCartQuantity(product.id)"
+                          @click="$store.commit('removeFromCart', product)"
+                        />
+                        <span class="q-mx-sm text-center" style="width: 10px">{{
+                          getCartQuantity(product.id)
+                        }}</span>
+                        <q-icon
+                          size="sm"
+                          name="add_circle"
+                          color="green"
+                          @click="
+                            $store.commit('addToCart', { ...product, shop })
+                          "
+                        />
+                      </div>
                       <span class="q-ml-md">{{
                         formatPrice(product.price)
                       }}</span>
@@ -78,7 +85,7 @@ export default {
   computed: {
     cart() {
       return this.$store.getters.cart;
-    }
+    },
   },
   mounted() {
     this.getData();
@@ -91,11 +98,11 @@ export default {
     async getData() {
       try {
         this.$q.loading.show();
-        
+
         let shops = await Shops.where("id", this.shopId)
           .include("products", "products.category")
           .$get();
-        
+
         if (shops.length) {
           this.shop = shops[0];
           this.categories = _.chain(shops[0].products)
@@ -104,10 +111,11 @@ export default {
             // `key` is group's name (id), `value` is the array of objects
             .map((value, key) => ({
               id: key,
-              products: value.filter(x => x.is_available),
+              products: value.filter((x) => x.is_available == 1),
               ...value[0].category,
             }))
             .value();
+            console.log(this.categories)
         }
       } catch (error) {
         console.error(error);

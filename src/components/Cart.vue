@@ -1,6 +1,6 @@
 <template>
-  <q-dialog v-model="dialog" full-height>
-    <q-card class="column full-height" style="width: 100vh">
+  <q-dialog v-model="dialog">
+    <q-card class="column" style="width: 100vh">
       <q-card-section class="q-pl-none">
         <q-btn
           class="text-capitalize"
@@ -18,7 +18,7 @@
         <span class="text-body1">No items in the cart</span>
       </q-card-section>
       <q-card-section class="col q-pt-none" v-if="cart.length">
-        <q-scroll-area style="height: 300px">
+        <q-scroll-area style="height: 200px">
           <q-list dense>
             <q-item v-for="item in cart" :key="`cart${item.id}`">
               <q-item-section>
@@ -48,7 +48,6 @@
             <q-item>
               <q-item-section class="q-mt-md">
                 <q-input
-                  type="textarea"
                   outlined
                   label="Comment"
                   v-model="comment"
@@ -60,12 +59,12 @@
       </q-card-section>
 
       <q-card-section class="text-caption text-grey">
-        *An order may take minimum 30 mins to prepare for delivery.
+        <div>*Order will be delivered to your current location.</div>
+        <div>*An order may take minimum 30 mins to prepare for delivery.</div>
       </q-card-section>
 
-      <q-card-actions
-        align="center"
-        class="bg-white text-primary"
+      <q-card-section
+        class="bg-white text-primary flex justify-center"
         v-if="cart.length"
       >
         <q-btn
@@ -76,7 +75,7 @@
           :loading="!isCheckout"
           :disable="!isCheckout"
         />
-      </q-card-actions>
+      </q-card-section>
     </q-card>
   </q-dialog>
 </template>
