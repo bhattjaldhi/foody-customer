@@ -1,0 +1,53 @@
+{
+  "name": "com.starsky.foody.client",
+  "displayName": "Foody Client",
+  "version": "1.0.0",
+  "description": "A sample Apache Cordova application that responds to the deviceready event.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ecosystem:cordova"
+  ],
+  "author": "Apache Cordova Team",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "cordova-android": "^9.0.0",
+    "cordova-browser": "^6.0.0",
+    "cordova-plugin-androidx": "^3.0.0",
+    "cordova-plugin-firebase-analytics": "^5.0.0",
+    "cordova-plugin-firebase-authentication": "^3.6.0",
+    "cordova-plugin-firebase-messaging": "^5.0.0",
+    "cordova-plugin-geolocation": "^4.0.2",
+    "cordova-plugin-splashscreen": "^6.0.0",
+    "cordova-plugin-stripe-google-pay": "0.0.8",
+    "cordova-plugin-whitelist": "^1.3.4",
+    "cordova-support-android-plugin": "^1.0.2",
+    "cordova-support-google-services": "^1.4.1",
+    "es6-promise-plugin": "^4.1.0"
+  },
+  "cordova": {
+    "plugins": {
+      "cordova-plugin-whitelist": {},
+      "cordova-plugin-stripe-google-pay": {},
+      "com.razorpay.cordova": {},
+      "cordova-plugin-firebase-authentication": {
+        "ANDROID_FIREBASE_AUTH_VERSION": "19.3.+"
+      },
+      "cordova-plugin-geolocation": {},
+      "cordova-plugin-firebase-messaging": {
+        "ANDROID_FIREBASE_MESSAGING_VERSION": "21.0.+",
+        "ANDROIDX_CORE_VERSION": "1.3.+"
+      },
+      "cordova-plugin-splashscreen": {}
+    },
+    "platforms": [
+      "browser",
+      "android"
+    ]
+  },
+  "dependencies": {
+    "com.razorpay.cordova": "git+https://github.com/razorpay/razorpay-cordova.git"
+  }
+}
