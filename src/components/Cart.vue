@@ -1,6 +1,9 @@
 <template>
   <q-dialog v-model="dialog">
-    <q-card class="column" style="width: 100vh">
+    <q-card
+      class="flex col overflow-auto"
+      style="width: 100vh; height: 80vh;"
+    >
       <q-card-section class="q-pl-none">
         <q-btn
           class="text-capitalize"
@@ -17,54 +20,53 @@
       >
         <span class="text-body1">No items in the cart</span>
       </q-card-section>
-      <q-card-section class="col q-pt-none" v-if="cart.length">
-        <q-scroll-area style="height: 200px">
-          <q-list dense>
-            <q-item v-for="item in cart" :key="`cart${item.id}`">
-              <q-item-section>
-                {{ item.quantity }} x {{ item.name }}
-              </q-item-section>
-              <q-item-section side>
-                <div class="row">
-                  <span class="q-mr-md">{{
-                    formatPrice(item.quantity * item.price)
-                  }}</span>
-                  <q-icon
-                    name="remove_circle"
-                    color="red"
-                    size="sm"
-                    @click="$store.commit('removeFromCart', item)"
-                  />
-                </div>
-              </q-item-section>
-            </q-item>
-            <q-separator />
-            <q-item>
-              <q-item-section> Delivery charge </q-item-section>
-              <q-item-section side>
-                {{ formatPrice(shop.delivery_charge) }}
-              </q-item-section>
-            </q-item>
-            <q-item>
-              <q-item-section class="q-mt-md">
-                <q-input
-                  outlined
-                  label="Comment"
-                  v-model="comment"
-                ></q-input>
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </q-scroll-area>
+      <q-card-section class="q-pt-none full-width" v-if="cart.length">
+        <q-list dense>
+          <q-item v-for="item in cart" :key="`cart${item.id}`">
+            <q-item-section>
+              {{ item.quantity }} x {{ item.name }}
+            </q-item-section>
+            <q-item-section side>
+              <div class="row">
+                <span class="q-mr-md">{{
+                  formatPrice(item.quantity * item.price)
+                }}</span>
+                <q-icon
+                  name="remove_circle"
+                  color="red"
+                  size="sm"
+                  @click="$store.commit('removeFromCart', item)"
+                />
+              </div>
+            </q-item-section>
+          </q-item>
+          <q-separator />
+          <q-item>
+            <q-item-section> Delivery charge </q-item-section>
+            <q-item-section side>
+              {{ formatPrice(shop.delivery_charge) }}
+            </q-item-section>
+          </q-item>
+        </q-list>
       </q-card-section>
-
+      <q-card-section>
+        <q-input dense outlined label="Comment" v-model="comment"></q-input>
+        <q-select 
+        outlined 
+        dense
+        label="Select address" 
+        class="q-mt-md"
+        v-model="address"
+        :options="addresses"
+        clearable></q-select>
+      </q-card-section>
       <q-card-section class="text-caption text-grey">
         <div>*Order will be delivered to your current location.</div>
         <div>*An order may take minimum 30 mins to prepare for delivery.</div>
       </q-card-section>
 
       <q-card-section
-        class="bg-white text-primary flex justify-center"
+        class="col bg-white text-primary flex justify-center"
         v-if="cart.length"
       >
         <q-btn
@@ -95,7 +97,8 @@ export default {
       dialog: false,
       comment: "",
       location: null,
-      isCheckout: true
+      isCheckout: true,
+      address: null
     };
   },
   computed: {
@@ -114,17 +117,21 @@ export default {
     user() {
       return this.$store.state.auth.user;
     },
+    addresses() {
+      return this.$store.state.auth.addresses;
+    }
   },
   methods: {
     open() {
       this.dialog = true;
     },
     close() {
+      this.$q.loading.hide()
       this.dialog = false;
     },
     async checkoutPayment() {
       try {
-        this.isCheckout = false
+        this.isCheckout = false;
         this.$q.loading.show();
 
         // TODO: order total amount must be above 200
@@ -133,30 +140,32 @@ export default {
             color: "negative",
             message: "Order total amount should must be above ₹ 200",
             position: "bottom",
-            timeout: "2000",
+            timeout: "2000"
           });
           return;
         }
 
         let shop = await Shops.$find(this.shop.id);
-
-        if (!shop.is_online) {
+        console.log("Cart_ORDER_SHOP", shop);
+        if (shop.is_online === 0) {
           this.$q.notify({
             color: "negative",
             message: "Restaurant is not accepting orders at the moment",
             position: "bottom",
-            timeout: "2000",
+            timeout: "2000"
           });
+          this.close();
           return;
         }
 
         // TODO: If user is not registered, make it register first
+        console.log("USER", this.user);
         if (!this.user) {
           this.$q.notify({
             color: "negative",
             message: "Please fill the address information in profile",
             position: "top",
-            timeout: "2000",
+            timeout: "2000"
           });
           this.close();
 
@@ -167,11 +176,11 @@ export default {
         }
 
         this.position = await this.getCurrentPosition();
-
+        console.log("Postion", this.position);
         await this.checkout({
           name: `Pay to ${this.shop.name}`,
-          price: parseInt(this.total) + "00",
-          descrtiption: "Get your food now !",
+          price: parseInt(this.totalWithDeliveryCharge) + "00",
+          descrtiption: "Get your food now !"
         });
         this.$q.loading.hide();
       } catch (error) {
@@ -179,13 +188,13 @@ export default {
         // error: enable geolocation
         this.$q.notify({
           color: "negative",
-          message: "Please enable geolocation",
+          message: error.message,
           position: "top",
-          timeout: "2000",
+          timeout: "2000"
         });
         this.$q.loading.hide();
-      }finally{
-        this.isCheckout = true
+      } finally {
+        this.isCheckout = true;
       }
     },
     async successPaymentCallback(success) {
@@ -221,7 +230,6 @@ export default {
         order.success = success;
         let newOrder = await order.save();
 
-
         let user = await Users.$find(this.shop.creator);
 
         // send notification
@@ -237,22 +245,22 @@ export default {
         this.$store.commit("addLastOrder", order);
 
         this.$store.commit("clearCart");
-        
+
         // success
         this.$q.notify({
           color: "positive",
           message: "Order has been placed successfully",
           position: "top",
-          timeout: "2000",
+          timeout: "2000"
         });
 
         this.close();
       } catch (e) {
         if (e.response) {
-          alert(e.response.data.error)
+          alert(e.response.data.error);
           this.$q.notify({
             color: "negative",
-            message: e.response.data.error,
+            message: e.response.data.error
           });
         }
       } finally {
@@ -264,12 +272,11 @@ export default {
         color: "negative",
         message: "Payment failed : " + error.description + " " + error.code,
         position: "top",
-        timeout: "2000",
+        timeout: "2000"
       });
-    },
-  },
+    }
+  }
 };
 </script>
 
-<style>
-</style>
+<style></style>

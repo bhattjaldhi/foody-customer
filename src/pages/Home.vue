@@ -47,7 +47,6 @@ export default {
   data() {
     return {
       categories: [],
-      interval: null,
     };
   },
   computed: {
@@ -58,11 +57,6 @@ export default {
   created() {
     let _this = this;
     _this.getShops();
-    if (!this.interval) {
-      this.interval = setInterval(() => {
-        _this.getShops();
-      }, 20000);
-    }
     this.getCategories();
   },
 

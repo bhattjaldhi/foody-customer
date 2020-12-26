@@ -56,18 +56,13 @@ export default {
       tab: "home",
     };
   },
-  computed: {
-    user() {
-      return this.$store.state.auth.user;
-    },
-  },
   mounted(){
     let view = this.$router.currentRoute.query.view
     if(view){
       this.tab = view
     }
-
-    if(!this.user){
+    let user = this.$store.state.auth.user
+    if(!user){
       this.tab = 'profile'
     }
   }

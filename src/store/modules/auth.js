@@ -6,12 +6,16 @@ import {
 
 
 const state = {
-  user: null
+  user: null,
+  addresses: [],
 }
 
 const mutations = {
   user: (state, payload) => {
     state.user = payload
+  },
+  address: (state, payload) => {
+    state.addresses = payload
   },
 }
 
@@ -42,6 +46,9 @@ const actions = {
 const getters = {
   user: state => {
     return state.user
+  },
+  addresses: state => {
+    return state.addresses
   }
 }
 

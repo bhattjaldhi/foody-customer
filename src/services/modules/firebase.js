@@ -14,7 +14,14 @@ export default store => {
         notification: {
           title: title,
           body: message,
-          sound: 'default'
+          sound: 'sound',
+          channelId: 'new_order'
+        },
+        android: {
+          "notification": {
+            "channel_id": "new_order",
+            "sound": "sound"
+          }
         },
         data: data,
         webpush: {

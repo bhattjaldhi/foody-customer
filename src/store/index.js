@@ -7,7 +7,7 @@ Vue.use(Vuex)
 
 const vuexPersistenceOptions = VuexPersistence({
   key: 'foodyclient',
-  paths: ['shops', 'cart']
+  paths: ['shops', 'cart', 'auth']
 })
 
 
