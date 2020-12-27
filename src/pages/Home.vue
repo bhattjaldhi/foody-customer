@@ -20,9 +20,9 @@
                 <div class="text-h6 text-bold col-11">{{ shop.name }}</div>
                 <div class="col-1 flex justify-end">
                   <q-avatar
-                  :color="shop.is_online == 1 ? 'positive' : 'red'"
-                  size="10px"
-                ></q-avatar>
+                    :color="shop.is_online == 1 ? 'positive' : 'red'"
+                    size="10px"
+                  ></q-avatar>
                 </div>
               </q-card-section>
 
@@ -31,6 +31,45 @@
                 <div>{{ shop.address }}</div>
               </q-card-section>
             </q-card>
+          </div>
+        </q-card-section>
+      </q-card>
+
+      <q-card flat>
+        <q-card-section class="q-pa-none q-pt-md">
+          <div class="text-subtitle1 text-bold text-primary">Image Portfolio</div>
+        </q-card-section>
+        <q-card-section>
+          <div class="row">
+            <div class="col-12">
+              <q-img src="../assets/images/portfolio9.png" alt="hello" style="height:170px;width:100%" />
+            </div>
+            <div class="col-6 q-pt-sm">
+              <q-img contain src="../assets/images/portfolio11.png" alt="hello" style="height:100px;width:100%" />
+            </div>
+           
+            <div class="col-6 q-pt-sm">
+              <q-img contain src="../assets/images/portfolio3.png" alt="hello" style="height:100px;width:100%" />
+            </div>
+            <div class="col-6 q-pt-sm">
+              <q-img contain src="../assets/images/portfolio4.png" alt="hello" style="height:100px;width:100%" />
+            </div>
+            
+            <div class="col-6 q-pt-sm">
+              <q-img contain src="../assets/images/portfolio7.png" alt="hello" style="height:100px;width:100%" />
+            </div>
+            
+            
+             <div class="col-6 q-pt-sm">
+              <q-img contain src="../assets/images/portfolio12.png" alt="hello" style="height:100px;width:100%" />
+            </div>
+             <div class="col-6 q-pt-sm">
+              <q-img contain src="../assets/images/portfolio1.png" alt="hello" style="height:100px;width:100%" />
+            </div>
+            <div class="col-12 q-pt-sm">
+              <q-img src="../assets/images/portfolio13.png" alt="hello" style="height:170px;width:100%" />
+            </div>
+
           </div>
         </q-card-section>
       </q-card>
@@ -71,7 +110,7 @@ export default {
         this.$store.dispatch("setShops", shops);
       } catch (error) {
         console.error(error);
-      } 
+      }
     },
     async getCategories() {
       this.categories = await Categories.page(1).limit(5).$get();

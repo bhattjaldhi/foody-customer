@@ -15,6 +15,7 @@
     "core-js": "^3.6.5",
     "firebase": "^8.0.0",
     "lodash": "^4.17.20",
+    "node-sass": "^4.12.0",
     "quasar": "^1.0.0",
     "vue-api-query": "^1.5.2",
     "vue-i18n": "^8.0.0",
