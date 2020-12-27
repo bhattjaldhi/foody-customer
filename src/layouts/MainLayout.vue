@@ -59,7 +59,7 @@ export default {
     let user = auth.currentUser;
     auth.onAuthStateChanged(function (user) {
       if (!user) {
-        // _this.$refs.phoneVerificationDialogRef.open();
+        _this.$refs.phoneVerificationDialogRef.open();
       }else{
         _this.$store.dispatch('getCurrentUser')
       }
