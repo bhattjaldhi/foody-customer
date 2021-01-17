@@ -67,8 +67,9 @@ const getters = {
     return state.cart.reduce((sum, n) => (n.quantity * n.price) + sum, 0)
   },
   totalWithDeliveryCharge: state => {
-    let productsTotal = state.cart.reduce((sum, n) => (n.quantity * n.price) + sum, 0)
-    return productsTotal + parseInt(state.shop.delivery_charge)
+    const GST = 5
+    const productsTotal = state.cart.reduce((sum, n) => (n.quantity * n.price) + sum, 0) + parseInt(state.shop.delivery_charge)
+    return (productsTotal * GST / 100) + productsTotal
   }
 }
 

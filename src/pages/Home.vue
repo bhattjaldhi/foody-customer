@@ -34,40 +34,46 @@
           </div>
         </q-card-section>
       </q-card>
+      <q-card flat>
+        <q-card-section>
+          <q-img contain src="../assets/logo.png">
 
+          </q-img>
+        </q-card-section>
+      </q-card>
       <q-card flat>
         <q-card-section class="q-pa-none q-pt-md">
           <div class="text-subtitle1 text-bold text-primary">Image Portfolio</div>
         </q-card-section>
         <q-card-section>
           <div class="row">
-            <div class="col-12">
-              <q-img src="../assets/images/portfolio9.png" alt="hello" style="height:170px;width:100%" />
+            <div class="col-12"> 
+              <q-img src="../assets/images/portfolio9.png" alt="Food Image" class="rounded-borders" tyle="height:170px;width:100%" />
             </div>
             <div class="col-6 q-pt-sm">
-              <q-img contain src="../assets/images/portfolio11.png" alt="hello" style="height:100px;width:100%" />
+              <q-img contain src="../assets/images/portfolio11.png" alt="Food Image" style="height:100px;width:100%" class="rounded-borders q-ma-sm" />
             </div>
            
             <div class="col-6 q-pt-sm">
-              <q-img contain src="../assets/images/portfolio3.png" alt="hello" style="height:100px;width:100%" />
+              <q-img contain src="../assets/images/portfolio3.png" alt="Food Image" style="height:100px;width:100%"  />
             </div>
             <div class="col-6 q-pt-sm">
-              <q-img contain src="../assets/images/portfolio4.png" alt="hello" style="height:100px;width:100%" />
+              <q-img contain src="../assets/images/portfolio4.png" alt="Food Image" style="height:100px;width:100%" />
             </div>
             
             <div class="col-6 q-pt-sm">
-              <q-img contain src="../assets/images/portfolio7.png" alt="hello" style="height:100px;width:100%" />
+              <q-img contain src="../assets/images/portfolio7.png" alt="Food Image" class="rounded-borders q-ma-sm" style="height:100px;width:100%" />
             </div>
             
             
              <div class="col-6 q-pt-sm">
-              <q-img contain src="../assets/images/portfolio12.png" alt="hello" style="height:100px;width:100%" />
+              <q-img contain src="../assets/images/portfolio12.png" alt="Food Image" style="height:100px;width:100%" class="rounded-borders q-ma-sm" />
             </div>
              <div class="col-6 q-pt-sm">
-              <q-img contain src="../assets/images/portfolio1.png" alt="hello" style="height:100px;width:100%" />
+              <q-img contain src="../assets/images/portfolio1.png" alt="Food Image" style="height:100px;width:100%"  />
             </div>
             <div class="col-12 q-pt-sm">
-              <q-img src="../assets/images/portfolio13.png" alt="hello" style="height:170px;width:100%" />
+              <q-img src="../assets/images/portfolio13.png" alt="Food Image" class="rounded-borders" style="height:170px;width:100%" />
             </div>
 
           </div>

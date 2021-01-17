@@ -1,9 +1,6 @@
 <template>
   <q-dialog v-model="dialog">
-    <q-card
-      class="flex col overflow-auto"
-      style="width: 100vh; height: 80vh;"
-    >
+    <q-card class="overflow-auto" style="width: 100vh; height: 80vh;">
       <q-card-section class="q-pl-none">
         <q-btn
           class="text-capitalize"
@@ -20,63 +17,114 @@
       >
         <span class="text-body1">No items in the cart</span>
       </q-card-section>
-      <q-card-section class="q-pt-none full-width" v-if="cart.length">
-        <q-list dense>
-          <q-item v-for="item in cart" :key="`cart${item.id}`">
-            <q-item-section>
-              {{ item.quantity }} x {{ item.name }}
-            </q-item-section>
-            <q-item-section side>
-              <div class="row">
-                <span class="q-mr-md">{{
-                  formatPrice(item.quantity * item.price)
-                }}</span>
-                <q-icon
-                  name="remove_circle"
-                  color="red"
-                  size="sm"
-                  @click="$store.commit('removeFromCart', item)"
-                />
-              </div>
-            </q-item-section>
-          </q-item>
-          <q-separator />
-          <q-item>
-            <q-item-section> Delivery charge </q-item-section>
-            <q-item-section side>
-              {{ formatPrice(shop.delivery_charge) }}
-            </q-item-section>
-          </q-item>
-        </q-list>
-      </q-card-section>
-      <q-card-section>
-        <q-input dense outlined label="Comment" v-model="comment"></q-input>
-        <q-select 
-        outlined 
-        dense
-        label="Select address" 
-        class="q-mt-md"
-        v-model="address"
-        :options="addresses"
-        clearable></q-select>
-      </q-card-section>
-      <q-card-section class="text-caption text-grey">
-        <div>*Order will be delivered to your current location.</div>
-        <div>*An order may take minimum 30 mins to prepare for delivery.</div>
-      </q-card-section>
+      <q-card-section class="flex column full-height q-pa-none q-ma-none" v-if="cart.length">
+        <q-scroll-area style="height: calc(100vh - 150px)" class="full-width">
+          <q-stepper
+            v-model="step"
+            ref="stepper"
+            color="primary"
+            animated
+            flat
+            class="q-pa-none q-ma-none"
+          >
+            <q-step :name="1" title="Delivery Address" icon="settings" :done="step > 1">
+              <Address />
+            </q-step>
 
-      <q-card-section
-        class="col bg-white text-primary flex justify-center"
-        v-if="cart.length"
-      >
-        <q-btn
-          flat
-          icon-right="arrow_forward"
-          :label="`Checkout ${formatPrice(totalWithDeliveryCharge)}`"
-          @click="checkoutPayment"
-          :loading="!isCheckout"
-          :disable="!isCheckout"
-        />
+            <q-step
+              :name="2"
+              title="Checkout"
+              icon="create_new_folder"
+              :done="step > 2"
+            >
+              <q-card-section class="q-pt-none full-width" v-if="cart.length">
+                <q-list dense>
+                  <q-item v-for="item in cart" :key="`cart${item.id}`">
+                    <q-item-section>
+                      {{ item.quantity }} x {{ item.name }}
+                    </q-item-section>
+                    <q-item-section side>
+                      <div class="row">
+                        <span class="q-mr-md">{{
+                          formatPrice(item.quantity * item.price)
+                        }}</span>
+                        <q-icon
+                          name="remove_circle"
+                          color="red"
+                          size="sm"
+                          @click="$store.commit('removeFromCart', item)"
+                        />
+                      </div>
+                    </q-item-section>
+                  </q-item>
+                  <q-item>
+                    <q-item-section>
+                      Delivery charge: 
+                    </q-item-section>
+                    <q-item-section side>
+                      + {{formatPrice(shop.delivery_charge)}}
+                    </q-item-section>
+                  </q-item>
+                  <q-item>
+                    <q-item-section>
+                      CGST (2.5%): 
+                    </q-item-section>
+                    <q-item-section side>
+                      + {{formatPrice(gst)}}
+                    </q-item-section>
+                  </q-item>
+                  
+                  <q-item>
+                    <q-item-section>
+                      SGST (2.5%): 
+                  </q-item-section>
+                    <q-item-section side>
+                      + {{formatPrice(gst)}}
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </q-card-section>
+              <q-card-section>
+                <q-input
+                  dense
+                  outlined
+                  label="Comment"
+                  v-model="comment"
+                ></q-input>
+              </q-card-section>
+              <q-card-section class="text-caption text-grey">
+                <div>
+                  *An order may take minimum 30 mins to prepare for delivery.
+                </div>
+              </q-card-section>
+            </q-step>
+            <template v-slot:navigation>
+              <q-stepper-navigation>
+                <q-btn
+                  v-if="step > 1"
+                  flat
+                  color="primary"
+                  @click="$refs.stepper.previous()"
+                  label="Back"
+                  class="q-ml-sm"
+                />
+                <q-btn
+                  @click="goToNext"
+                  color="primary"
+                  flat
+                  icon-right="arrow_forward"
+                  :label="
+                    step === 2
+                      ? `Checkout ${formatPrice(totalWithDeliveryCharge)}`
+                      : 'Continue'
+                  "
+                  :loading="!isCheckout"
+                  :disable="!isCheckout"
+                />
+              </q-stepper-navigation>
+            </template>
+          </q-stepper>
+        </q-scroll-area>
       </q-card-section>
     </q-card>
   </q-dialog>
@@ -85,6 +133,7 @@
 <script>
 import CommonMixin from "src/mixins/common";
 import RazorPayMixin from "src/mixins/razorpay";
+import Address from "src/components/Address";
 import Orders from "src/models/order";
 import Users from "src/models/users";
 import Shops from "src/models/shops";
@@ -92,13 +141,16 @@ import { auth, firebase } from "src/boot/firebase";
 
 export default {
   mixins: [CommonMixin, RazorPayMixin],
+  components: {
+    Address
+  },
   data() {
     return {
       dialog: false,
       comment: "",
       location: null,
       isCheckout: true,
-      address: null
+      step: 1
     };
   },
   computed: {
@@ -117,8 +169,11 @@ export default {
     user() {
       return this.$store.state.auth.user;
     },
-    addresses() {
-      return this.$store.state.auth.addresses;
+    selectedAddress() {
+      return this.$store.state.auth.selectedAddress;
+    },
+    gst (){
+      return (this.total * 2.5 / 100 )
     }
   },
   methods: {
@@ -126,8 +181,17 @@ export default {
       this.dialog = true;
     },
     close() {
-      this.$q.loading.hide()
+      this.$q.loading.hide();
       this.dialog = false;
+    },
+    goToNext() {
+      if (this.step === 2) {
+        this.checkoutPayment()
+      }
+
+      if (this.step === 1 && this.selectedAddress) {
+        this.$refs.stepper.next();
+      }
     },
     async checkoutPayment() {
       try {
@@ -205,24 +269,17 @@ export default {
       try {
         this.$q.loading.show();
 
-        let address = `${this.user.address_line_1}\n${
-          this.user.address_line_2 ? this.user.address_line_2 + "\n" : ""
-        }${
-          this.user.address_landmark ? this.user.address_landmark + "\n" : ""
-        }${this.user.address_city} ${this.user.address_state}\n${
-          this.user.address_zipcode
-        }`;
         let order = new Orders({});
         order.shop_id = this.shop.id;
         order.user_id = auth.currentUser.uid;
         order.user_name = this.user.name;
-        order.user_address = address;
+        order.user_address = this.selectedAddress;
         order.user_email = this.user.email;
         order.user_phone = this.user.phone;
         order.fcm_token = localStorage.getItem("fcm");
         order.user_latitude = this.position.coords.latitude;
         order.user_longitude = this.position.coords.longitude;
-        order.total = this.total + "";
+        order.total = this.totalWithDeliveryCharge + "";
         order.items = JSON.stringify(this.cart);
         order.delivery_charge = this.shop.delivery_charge;
         order.payment_id = success.razorpay_payment_id;

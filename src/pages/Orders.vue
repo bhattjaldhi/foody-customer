@@ -22,7 +22,7 @@
                 }}</span>
               </div>
               <div class="row items-center text-primary">
-                <span>{{ formatPrice(order.total) }}</span>
+                <span>{{ formatPrice(parseInt(order.total) + parseFloat( order.delivery_charge)) }}</span>
               </div>
             </q-item-section>
           </template>

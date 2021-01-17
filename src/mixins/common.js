@@ -19,7 +19,7 @@ export default {
       options = {
         enableHighAccuracy: false,
         maximumAge: 3000,
-        timeout: 3000
+        timeout: 10000
       }
     ) {
 
